@@ -215,9 +215,14 @@ call MPI_BCAST(minlrate,1,MPI_DOUBLE_PRECISION,0,seg_comm,ierr)
 call MPI_BCAST(lratefact,1,MPI_DOUBLE_PRECISION,0,seg_comm,ierr)
 call MPI_BCAST(rholratefact,1,MPI_DOUBLE_PRECISION,0,seg_comm,ierr)
 
-!--- set up the random number generator for this node
-call system_clock(c1)
-call random_seed(PUT = c1 * (myrank+1) * (seed+myrank+1))
+!--- set up the random number generator for this node (hard-coded for reproducible development)
+integer :: seed_size
+call random_seed(SIZE=seed_size)
+allocate(seed_array(seed_size))
+seed_array = 12345 + myrank  ! Fixed seed for reproducible results
+call random_seed(PUT = seed_array)
+print *, 'random seed for node ', myrank+1, ' = ', seed_array; call flush(6)
+write(20,*) 'random seed for node ', myrank+1, ' = ', seed_array; call flush(6)
 !call DRANDINITIALIZE(1,1,(myrank+1)*(c1/tot_procs + 1),lseed,state,lstate,info)
 
 
