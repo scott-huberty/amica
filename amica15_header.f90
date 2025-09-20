@@ -74,6 +74,7 @@ double precision :: newtrate = 0.5, epsdble = 1.0e-16, sk1, sk2, natrate, minhes
 double precision :: usum, tmpsum, vsum, dkap, comp_thresh = 0.99, min_dll = 1.0e-9, min_nd = 1.0e-7
 
 integer :: seed_size
+integer :: ios
 integer :: num_comps = -1, num_mix = 3, num_mix_init = 3, share_iter = 100, share_start = 100, blk_min = 128, blk_max = 1024
 integer :: data_dim, N1, h, hh, t, flen, numgood, numgoodsum, ngood, maxchpdf, blk_step = 128
 integer :: numchpdf, chpdfint, chpdfstart, pcakeep

@@ -740,6 +740,8 @@ if (seg_rank == 0) then
       end do
       if (.not. fix_init) then
          call random_number(mutmp)
+         ! Write mutmp to binary file
+         call dump_matrix_bin(trim(outdirparam)//'mutmp.bin', mutmp)
          !call DRANDUNIFORM(num_mix*num_comps,dble(0.0),dble(1.0),state,mutmp,info)
          mu(1:num_mix,:) = mu(1:num_mix,:) + dble(0.05)*(dble(1.0) - dble(2.0)*mutmp)
       end if
@@ -755,6 +757,8 @@ if (seg_rank == 0) then
          sbeta(1:num_mix,:) = dble(1.0)
       else
          call random_number(sbetatmp)
+         ! Write sbetatmp to binary file
+         call dump_matrix_bin(trim(outdirparam)//'sbetatmp.bin', sbetatmp)
          !call DRANDUNIFORM(num_mix*num_comps,dble(0.0),dble(1.0),state,sbetatmp,info)
          sbeta(1:num_mix,:) = dble(1.0) + dble(0.1)*(dble(0.5) - sbetatmp)
       end if
@@ -798,6 +802,8 @@ if (seg_rank == 0) then
             end do
          else
             call random_number(Wtmp)
+            ! Write Wtmp to binary file
+            call dump_matrix_bin(trim(outdirparam)//'Wtmp.bin', Wtmp)
             !CALL DRANDUNIFORM(nw*nw,dble(0.0),dble(1.0),state,Wtmp,info)
             A(:,(h-1)*nw+1:h*nw) = dble(0.01)*(dble(0.5)-Wtmp)
             do i = 1,nw
@@ -2424,6 +2430,40 @@ subroutine write_output
 
   end if
 end subroutine write_output
+
+
+subroutine dump_matrix_bin(filename, M)
+   ! Write a 2D real matrix M to a binary file with its dimensions.
+   use, intrinsic :: iso_fortran_env, only: error_unit, real64
+   implicit none
+
+   character(len=*), intent(in) :: filename
+   real(real64), intent(in) :: M(:, :)
+   integer :: unit, ios
+   integer :: nrows, ncols
+
+   if (size(shape(M)) /= 2) then
+    print *, 'Error: dump_matrix_bin: M must be 2D'
+    write(error_unit, '(A)') 'dump_matrix_bin: M must be 2D'
+    return
+   end if
+
+   ! Open file for binary stream write
+   open(newunit=unit, file=filename, status='replace', &
+         access='stream', form='unformatted', action='write', iostat=ios)
+   if (ios /= 0) then
+        write(error_unit, '(A, I0, 2A)') 'dump_matrix_bin: open failed iostat=', ios, &
+                                        ' file=', trim(filename)
+      return
+   end if
+
+   ! Write raw column-major data
+   write(unit) M
+
+   ! Close file
+   close(unit)
+end subroutine dump_matrix_bin
+
 
 !----------------------------------------------------------------------
 
