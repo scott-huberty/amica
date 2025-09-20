@@ -216,7 +216,6 @@ call MPI_BCAST(lratefact,1,MPI_DOUBLE_PRECISION,0,seg_comm,ierr)
 call MPI_BCAST(rholratefact,1,MPI_DOUBLE_PRECISION,0,seg_comm,ierr)
 
 !--- set up the random number generator for this node (hard-coded for reproducible development)
-integer :: seed_size
 call random_seed(SIZE=seed_size)
 allocate(seed_array(seed_size))
 seed_array = 12345 + myrank  ! Fixed seed for reproducible results
