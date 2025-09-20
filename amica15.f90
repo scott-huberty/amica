@@ -300,6 +300,7 @@ elseif (do_mean) then
    if (myrank == 0) then
       call DSCAL(nx,dble(1.0)/dble(cnt),mean,1)
       print *, ' mean = ', mean(1:3); call flush(6)
+      write(20,*) ' mean = ', mean(1:3); call flush(6)
    end if
 end if
 
@@ -318,7 +319,8 @@ do seg = 1,numsegs
    num_blocks = fieldsize /  blk_size(seg)
    lastblocksize = mod(fieldsize,blk_size(seg))
 
-   !print *, 'num_blocks = ', num_blocks, ' lastblocksize = ', lastblocksize, ' fieldsize = ', fieldsize; call flush(6);
+   print *, 'num_blocks = ', num_blocks, ' lastblocksize = ', lastblocksize, ' fieldsize = ', fieldsize; call flush(6);
+   write(20,*) 'num_blocks = ', num_blocks, ' lastblocksize = ', lastblocksize, ' fieldsize = ', fieldsize; call flush(6);
 
    do k = 1,num_blocks
       bstrt = (k-1)*blk_size(seg) + 1
@@ -349,10 +351,10 @@ do seg = 1,numsegs
    fnum = dataseg(seg)%filenum
    fieldsize = dataseg(seg)%lastdim
    ldim = dataseg(seg)%lastdim
-   !print *, 'seg ', seg, ' fnum = ', fnum, ' fieldsize = ', fieldsize, ' ldim = ', ldim; call flush(6)
-   num_blocks = fieldsize / blk_size(seg)
-   lastblocksize = mod(fieldsize,blk_size(seg))
-   !print *, 'seg ', seg, ' num_blocks = ', num_blocks, ' lastblocksize = ', lastblocksize; call flush(6)
+   print *, 'seg ', seg, ' fnum = ', fnum, ' fieldsize = ', fieldsize, ' ldim = ', ldim; call flush(6)
+   num_blocks = fieldsize / blk_size(seg) ! = 59 for my test file
+   lastblocksize = mod(fieldsize,blk_size(seg)) ! = 296 for my test file
+   print *, 'seg ', seg, ' num_blocks = ', num_blocks, ' lastblocksize = ', lastblocksize; call flush(6)
    do k = 1,num_blocks
       bstrt = (k-1)*blk_size(seg) + 1
       bstp = bstrt + blk_size(seg) - 1
@@ -432,7 +434,7 @@ else
    if (do_sphere) then
       if (seg_rank == 0) then
          lwork = 10*nx*nx
-         !print *, 'doing eig nx = ', nx, ' lwork = ', lwork; call flush(6)
+         print *, 'doing eig nx = ', nx, ' lwork = ', lwork; call flush(6)
          call DCOPY(nx*nx,S,1,Stmp,1)
 
          call DSYEV('V','L',nx,Stmp,nx,eigs,work,lwork,info)
