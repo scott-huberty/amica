@@ -1304,8 +1304,8 @@ subroutine get_updates_and_likelihood
                        call vdLn(tblksize,abs(y(bstrt:bstp,i,j,h)),tmpvec(bstrt:bstp))
                        call vdExp(tblksize,rho(j,comp_list(i,h))*tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))                       
 #else
-                       call vrda_log(tblksize,abs(y(bstrt:bstp,i,j,h)),tmpvec(bstrt:bstp))
-                       call vrda_exp(tblksize,rho(j,comp_list(i,h))*tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
+                       tmpvec(bstrt:bstp) = log(abs(y(bstrt:bstp,i,j,h)))
+                       tmpvec2(bstrt:bstp) = exp(rho(j,comp_list(i,h))*tmpvec(bstrt:bstp))
 #endif
                        !call vrda_exp(tblksize,-tmpvec2(bstrt:bstp),tmpvec(bstrt:bstp))
                        z0(bstrt:bstp,j) = log(alpha(j,comp_list(i,h))) + log(sbeta(j,comp_list(i,h))) - tmpvec2(bstrt:bstp) &
@@ -1327,7 +1327,7 @@ subroutine get_updates_and_likelihood
 #ifdef MKL
                     call vdLn(tblksize,tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
 #else
-                    call vrda_log(tblksize,tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
+                    tmpvec2(bstrt:bstp) = log(tmpvec(bstrt:bstp))
 #endif
                     !z0(j,bstrt:bstp) = alpha(j,i,h) * sbeta(j,i,h) * dble(0.25) / (tmpvec(bstrt:bstp)*tmpvec(bstrt:bstp))
                     z0(bstrt:bstp,j) = log(alpha(j,comp_list(i,h))) + log(sbeta(j,comp_list(i,h))) - &
@@ -1341,7 +1341,7 @@ subroutine get_updates_and_likelihood
 #ifdef MKL
                     call vdLn(tblksize,tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
 #else
-                    call vrda_log(tblksize,tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
+                    tmpvec2(bstrt:bstp) = log(tmpvec(bstrt:bstp))
 #endif
                     z0(bstrt:bstp,1) = log(sbeta(1,comp_list(i,h))) - &
                          dble(0.5)*y(bstrt:bstp,i,1,h)*y(bstrt:bstp,i,1,h) + tmpvec2(bstrt:bstp) - log(dble(4.132731354))
@@ -1353,7 +1353,7 @@ subroutine get_updates_and_likelihood
 #ifdef MKL
                     call vdLn(tblksize,tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
 #else
-                    call vrda_log(tblksize,tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
+                    tmpvec2(bstrt:bstp) = log(tmpvec(bstrt:bstp))
 #endif
                     z0(bstrt:bstp,1) = log(sbeta(1,comp_list(i,h))) - &
                          dble(0.5)*y(bstrt:bstp,i,1,h)*y(bstrt:bstp,i,1,h) - tmpvec2(bstrt:bstp) - log(dble(1.858073988))
@@ -1463,8 +1463,8 @@ subroutine get_updates_and_likelihood
                        call vdLn(tblksize,abs(y(bstrt:bstp,i,j,h)),tmpvec(bstrt:bstp))
                        call vdExp(tblksize,(rho(j,comp_list(i,h))-dble(1.0))*tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
 #else
-                       call vrda_log(tblksize,abs(y(bstrt:bstp,i,j,h)),tmpvec(bstrt:bstp))
-                       call vrda_exp(tblksize,(rho(j,comp_list(i,h))-dble(1.0))*tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
+                       tmpvec(bstrt:bstp) = log(abs(y(bstrt:bstp,i,j,h)))
+                       tmpvec2(bstrt:bstp) = exp((rho(j,comp_list(i,h))-dble(1.0))*tmpvec(bstrt:bstp))
 #endif
                        fp(bstrt:bstp) = rho(j,comp_list(i,h)) * sign(dble(1.0),y(bstrt:bstp,i,j,h)) * tmpvec2(bstrt:bstp)
                     end if
@@ -1539,9 +1539,9 @@ subroutine get_updates_and_likelihood
                     call vdExp(tblksize,rho(j,comp_list(i,h))*logab(bstrt:bstp),tmpy(bstrt:bstp))
                     call vdLn(tblksize,tmpy(bstrt:bstp),logab(bstrt:bstp))
 #else
-                    call vrda_log(tblksize,tmpy(bstrt:bstp),logab(bstrt:bstp))
-                    call vrda_exp(tblksize,rho(j,comp_list(i,h))*logab(bstrt:bstp),tmpy(bstrt:bstp))
-                    call vrda_log(tblksize,tmpy(bstrt:bstp),logab(bstrt:bstp))
+                    logab(bstrt:bstp) = log(tmpy(bstrt:bstp))
+                    tmpy(bstrt:bstp) = exp(rho(j,comp_list(i,h))*logab(bstrt:bstp))
+                    logab(bstrt:bstp) = log(tmpy(bstrt:bstp))
 #endif
                     where (tmpy(bstrt:bstp) < epsdble)
                        logab(bstrt:bstp) = dble(0.0)
@@ -1564,8 +1564,8 @@ subroutine get_updates_and_likelihood
                        call vdLn(tblksize,tmpy(bstrt:bstp),logab(bstrt:bstp))
                        call vdExp(tblksize,rho(j,comp_list(i,h))*logab(bstrt:bstp),tmpy(bstrt:bstp))
 #else
-                       call vrda_log(tblksize,tmpy(bstrt:bstp),logab(bstrt:bstp))
-                       call vrda_exp(tblksize,rho(j,comp_list(i,h))*logab(bstrt:bstp),tmpy(bstrt:bstp))
+                       logab(bstrt:bstp) = log(tmpy(bstrt:bstp))
+                       tmpy(bstrt:bstp) = exp(rho(j,comp_list(i,h))*logab(bstrt:bstp))
 #endif
                        tmpsum = sum( u(bstrt:bstp) * tmpy(bstrt:bstp) )
 !$OMP CRITICAL
@@ -2153,8 +2153,8 @@ subroutine determine_block_size2
               call vdLn(tblksize,abs(xtmp(bstrt:bstp,i)),tmpvec(bstrt:bstp))
               call vdExp(tblksize,dble(2.0)*tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
 #else
-              call vrda_log(tblksize,abs(xtmp(bstrt:bstp,i)),tmpvec(bstrt:bstp))
-              call vrda_exp(tblksize,dble(2.0)*tmpvec(bstrt:bstp),tmpvec2(bstrt:bstp))
+              tmpvec(bstrt:bstp) = log(abs(xtmp(bstrt:bstp,i)))
+              tmpvec2(bstrt:bstp) = exp(dble(2.0)*tmpvec(bstrt:bstp))
 #endif
               tmpvec(bstrt:bstp) = tmpvec2(bstrt:bstp)- gamln(dble(1.0)+dble(1.0)/dble(1.5)) - log(dble(2.0))
            end do
