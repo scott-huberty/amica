@@ -44,3 +44,10 @@ jobs:
         run: |
           mkdir amicaout_test
           ./amica15ub_test ./amicadefs_test.param
+      
+      # Always upload artifact for CI consumption
+      - name: Upload Fortran test output as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: fortran-test-output
+          path: amicaout_test
