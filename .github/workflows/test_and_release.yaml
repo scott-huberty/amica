@@ -33,3 +33,9 @@ jobs:
       - name: Build Fortran program
         run: |
           make
+      
+      - name: Download test data
+        run: |
+          curl -L -o eeglab_data.fdt https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.fdt
+          curl -L -o eeglab_data.set https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.set
+          ls -lh eeglab_data.*
