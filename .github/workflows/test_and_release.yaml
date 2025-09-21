@@ -1,4 +1,6 @@
 name: Build Fortran, test it, and optionally publish test outputs
+permissions:
+  contents: write   # allow uploading assets to a release
 
 on:
   push:
@@ -44,10 +46,21 @@ jobs:
         run: |
           mkdir amicaout_test
           ./amica15ub_test ./amicadefs_test.param
-      
+
       # Always upload artifact for CI consumption
+      - name: Archive test outputs
+        run: tar -czf amicaout_test.tar.gz -C amicaout_test .
       - name: Upload Fortran test output as artifact
         uses: actions/upload-artifact@v4
         with:
           name: fortran-test-output
-          path: amicaout_test
+          path: amicaout_test.tar.gz
+      
+      # Attach test outputs to release if this was a release event
+      - name: Upload Fortran test output to release
+        if: github.event_name == 'release' && github.event.action == 'published'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: amicaout_test.tar.gz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
