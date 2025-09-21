@@ -39,3 +39,8 @@ jobs:
           curl -L -o eeglab_data.fdt https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.fdt
           curl -L -o eeglab_data.set https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.set
           ls -lh eeglab_data.*
+      
+      - name: Run test dataset
+        run: |
+          mkdir amicaout_test
+          ./amica15ub_test ./amicadefs_test.param
