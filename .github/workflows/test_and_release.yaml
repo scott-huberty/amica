@@ -1,0 +1,31 @@
+name: Build Fortran, test it, and optionally publish test outputs
+
+on:
+  push:
+    branches:
+      - amica-python
+  pull_request:
+    branches:
+      - amica-python
+  release:
+    types: [published]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v5
+
+      - name: Setup Fortran
+        uses: fortran-lang/setup-fortran@v1
+        with:
+          compiler: gcc
+          version: latest
+      
+      - name: Install dependencies needed for compilation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y make \
+            libblas-dev liblapack-dev \
+            openmpi-bin libopenmpi-dev
