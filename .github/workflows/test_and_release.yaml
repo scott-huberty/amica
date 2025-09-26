@@ -63,15 +63,15 @@ jobs:
 
       - name: Run test datasets
         run: |
-          echo "::group:Running EEGLab Sample data test"
+          echo "::group::Running EEGLab Sample data test"
           ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_test.param
           echo "::endgroup::"
           echo "Fortran test completed"
-          echo "::group:Running toy_1"
+          echo "::group::Running toy_1"
           ./amica15ub_test ./tests/toy_1/amicadefs_toy_1.param
           echo "::endgroup::"
           echo "Fortran test on toy_1 completed"
-          echo "::group:Running toy_2"
+          echo "::group::Running toy_2"
           ./amica15ub_test ./tests/toy_2/amicadefs_toy_2.param
           echo "::endgroup::"
           echo "Fortran test on toy_2 completed"
