@@ -69,4 +69,4 @@ if __name__ == "__main__":
 
     # Save the generated data to a binary file in Fortran order
     np.asfortranarray(toy_data.astype("<f4")).tofile(args.output)
-    print(f"Toy data saved to {args.output}")
+    print(f"Toy data of shape {toy_data.shape} saved to {args.output}")
