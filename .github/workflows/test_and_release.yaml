@@ -39,10 +39,11 @@ jobs:
         run: |
           python amica/tools/simulate_data.py --n-samples 10000 --mix-signals --noise-factor 0.05 --output tests/toy_1/toy_1.bin
           ls -lh tests/toy_1/toy_1.bin
-        run: |
+          echo "Toy 1 data generated"
           python amica/tools/simulate_data.py --n-samples 5000 --mix-signals --output tests/toy_2/toy_2.bin
           ls -lh tests/toy_2/toy_2.bin
-      
+          echo "Toy 2 data generated"
+
       - name: Install dependencies needed for compilation
         run: |
           sudo apt-get update
@@ -64,10 +65,8 @@ jobs:
         run: |
           ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_test.param
           echo "Fortran test completed"
-        run: |
           ./amica15ub_test ./tests/toy_1/amicadefs_toy_1.param
           echo "Fortran test on toy_1 completed"
-        run: |
           ./amica15ub_test ./tests/toy_2/amicadefs_toy_2.param
           echo "Fortran test on toy_2 completed"
 
