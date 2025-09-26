@@ -1,5 +1,5 @@
-files ./eeglab_data.fdt
-outdir ./amicaout_test/
+files ./tests/eeglab_sample_data/eeglab_data.fdt
+outdir ./tests/eeglab_sample_data/amicaout_test/
 block_size 512
 do_opt_block 0
 blk_min 256

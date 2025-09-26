@@ -25,6 +25,24 @@ jobs:
           compiler: gcc
           version: latest
       
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+        
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install numpy
+      
+      - name: Generate simulated test data
+        run: |
+          python amica/tools/simulate_data.py --n-samples 10000 --mix-signals --noise-factor 0.05 --output tests/toy_1/toy_1.bin
+          ls -lh tests/toy_1/toy_1.bin
+        run: |
+          python amica/tools/simulate_data.py --n-samples 5000 --mix-signals --output tests/toy_2/toy_2.bin
+          ls -lh tests/toy_2/toy_2.bin
+      
       - name: Install dependencies needed for compilation
         run: |
           sudo apt-get update
@@ -38,29 +56,35 @@ jobs:
       
       - name: Download test data
         run: |
-          curl -L -o eeglab_data.fdt https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.fdt
-          curl -L -o eeglab_data.set https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.set
-          ls -lh eeglab_data.*
+          curl -L -o tests/eeglab_sample_data/eeglab_data.fdt https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.fdt
+          curl -L -o tests/eeglab_sample_data/eeglab_data.set https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.set
+          ls -lh tests/eeglab_sample_data/eeglab_data.*
       
       - name: Run test dataset
         run: |
-          mkdir amicaout_test
-          ./amica15ub_test ./amicadefs_test.param
+          ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_test.param
+          echo "Fortran test completed"
+        run: |
+          ./amica15ub_test ./tests/toy_1/amicadefs_toy_1.param
+          echo "Fortran test on toy_1 completed"
+        run: |
+          ./amica15ub_test ./tests/toy_2/amicadefs_toy_2.param
+          echo "Fortran test on toy_2 completed"
 
       # Always upload artifact for CI consumption
       - name: Archive test outputs
-        run: tar -czf amicaout_test.tar.gz -C amicaout_test .
+        run: tar -czf test_output.tar.gz -C tests toy_1 toy_2 eeglab_sample_data
       - name: Upload Fortran test output as artifact
         uses: actions/upload-artifact@v4
         with:
           name: fortran-test-output
-          path: amicaout_test.tar.gz
+          path: test_output.tar.gz
       
-      # Attach test outputs to release if this was a release event
+      # Attach test outputs to release when we cut one
       - name: Upload Fortran test output to release
         if: github.event_name == 'release' && github.event.action == 'published'
         uses: softprops/action-gh-release@v2
         with:
-          files: amicaout_test.tar.gz
+          files: test_output.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
