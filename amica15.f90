@@ -431,6 +431,7 @@ else
       print *, 'getting the sphering matrix ...'; call flush(6)
    end if
 
+   allocate(Stmp2(nx,nx)); Stmp2 = dble(0.0)
    if (do_sphere) then
       if (seg_rank == 0) then
          lwork = 10*nx*nx
@@ -455,7 +456,8 @@ else
          print *, 'num eigs kept = ', numeigs; call flush(6)
          write(20,*) 'num eigs kept = ', numeigs; call flush(6)
 
-         allocate(Stmp2(nx,nx)); Stmp2 = dble(0.0)
+         ! allocate(Stmp2(nx,nx)); Stmp2 = dble(0.0)
+         Stmp2 = dble(0.0)
          !call DSCAL(nx*nx,dble(0.0),Stmp2,1)
          !---reverse the order of eigenvectors
          do i = 1,nx
@@ -1014,6 +1016,7 @@ do
    if (seg_rank == 0) then
       ! if we get a NaN early, try to reinitialize and startover a few times 
       if ((iter .le. restartiter) .and. isNaN(LL(iter))) then
+         ERROR STOP "Input must be positive." ! Force error in development version
          if (numrestarts > maxrestarts) then
             leave = .true.
          else
