@@ -70,7 +70,7 @@ jobs:
           echo "Running toy_2"
           ./amica15ub_test ./tests/toy_2/amicadefs_toy_2.param
           echo "Testing Reduced Rank and Approx Sphere"
-          ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_test_reduced_rank_approx_sphere.param
+          ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_reduced_rank_approx_sphere.param
 
       # Always upload artifact for CI consumption
       - name: Archive test outputs
