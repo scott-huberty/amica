@@ -1,5 +1,5 @@
 files ./tests/eeglab_sample_data/eeglab_data.fdt
-outdir ./tests/eeglab_sample_data/amicaout_reduced_rank_approx_sphere/
+outdir ./tests/eeglab_sample_data/amicaout_dimension_reduction_approx_sphere/
 block_size 30504
 do_opt_block 0
 blk_min 256
