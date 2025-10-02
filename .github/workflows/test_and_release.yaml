@@ -63,14 +63,19 @@ jobs:
 
       - name: Run test datasets
         run: |
-          echo ":Running EEGLab Sample data test"
+          echo "Running EEGLab Sample data test (32 Components with approximate sphere)"
           ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_test.param
-          echo "Running toy_1"
+          echo "Testing All components (32) with direct sphere"
+          ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_test_direct_sphere.param
+          echo "Testing Dimension Reduction with Approximate Sphere"
+          ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_dimension_reduction_approx_sphere.param
+          echo "Testing Dimension Reduction with Direct Sphere"
+          ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_dimension_reduction_direct_sphere.param
+          echo "Running toy_1 (mixed signals)"
           ./amica15ub_test ./tests/toy_1/amicadefs_toy_1.param
-          echo "Running toy_2"
+          echo "Running toy_2 (unmixed signals)"
           ./amica15ub_test ./tests/toy_2/amicadefs_toy_2.param
-          echo "Testing Reduced Rank and Approx Sphere"
-          ./amica15ub_test ./tests/eeglab_sample_data/amicadefs_reduced_rank_approx_sphere.param
+
 
       # Always upload artifact for CI consumption
       - name: Archive test outputs
