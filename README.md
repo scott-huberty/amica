@@ -1,10 +1,10 @@
 # Dev Branch for AMICA Testing (Not for general use)
 
-This branch is for development and testing of the AMICA algorithm and its Python
-implementation. It is not intended for general use. Namely, this branch has an updated
+This branch is for testing of the AMICA algorithm
+It is not intended for general use. Namely, this branch has an updated
 version of the Fortran AMICA code that fixes the random seed initialization to allow
 reproducible results, and additionally saves the initial Wtmp, sbetatmp, and mutmp
-matrices to allow initializing the Python code with the same values.
+matrices.
 
 To compile the Fortran code, you can use the provided Makefile:
 
