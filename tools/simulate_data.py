@@ -1,5 +1,6 @@
 """This function was taken from AMICA-Python. Once that package is public, lets use it"""
 import argparse
+from pathlib import Path
 
 import numpy as np
 
@@ -38,6 +39,35 @@ def generate_toy_data(n_samples=1000, mix_signals=True, noise_factor=None):
         x = np.dot(x, [[0.9, 0.1], [0.1, 0.9]])
     return x
 
+
+def write_data(data, filename):
+    """Save data to a binary file in Fortran-compatible format.
+    
+    Parameters
+    ----------
+    data : array-like
+        The data of shape (n_samples, n_features) to save. Will be converted to a
+        Fortran-contiguous array of type float32.
+    filename : str or Path
+        The path to the output binary file.
+    
+    Returns
+    -------
+    data : np.ndarray
+        The Fortran-contiguous array that was saved.
+    path : Path
+        The path to the saved file.
+    """
+    # tofile ravels matrices in C order, so force Fortran order.
+    fpath = Path(filename).expanduser().resolve()
+    # We actually have to write in C order to be Fortran compatible.
+    # Or transpose the data First and write in Fortran order.
+    # Because Fortran program expects (n_features, n_samples)
+    vector = data.T.astype("<f4").ravel(order="F")
+    vector.tofile(fpath)
+    return fpath, data
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Generate toy data consisting of a sine and square wave."
@@ -68,5 +98,5 @@ if __name__ == "__main__":
     )
 
     # Save the generated data to a binary file in Fortran order
-    np.asfortranarray(toy_data.astype("<f4")).tofile(args.output)
+    write_data(toy_data, args.output)
     print(f"Toy data of shape {toy_data.shape} saved to {args.output}")
