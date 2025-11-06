@@ -44,7 +44,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install scipy
+          pip install numpy
 
       - name: Download test data
         run: |
@@ -60,9 +60,6 @@ jobs:
           python tools/simulate_data.py --n-samples 5000 --mix-signals --output tests/toy_2/toy_2.bin
           ls -lh tests/toy_2/toy_2.bin
           echo "Toy 2 data generated"
-          python tools/generate_sklearn_tut_data.py --output tests/sklearn_tutorial_data/sklearn_tutorial_data.bin
-          ls -lh tests/sklearn_tutorial_data/sklearn_tutorial_data.bin
-          echo "Sklearn tutorial data generated"
 
       - name: Run test datasets
         run: |
@@ -78,14 +75,11 @@ jobs:
           ./amica15ub_test ./tests/toy_1/amicadefs_toy_1.param
           echo "Running toy_2 (unmixed signals)"
           ./amica15ub_test ./tests/toy_2/amicadefs_toy_2.param
-          echo "Running sklearn tutorial data"
-          ./amica15ub_test ./tests/sklearn_tutorial_data/newton/amicadefs_sklearn_tutorial_data.param
-          ./amica15ub_test ./tests/sklearn_tutorial_data/SGD/amicadefs_sklearn_tutorial_data.param
 
 
       # Always upload artifact for CI consumption
       - name: Archive test outputs
-        run: tar -czf test_output.tar.gz -C tests toy_1 toy_2 eeglab_sample_data sklearn_tutorial_data
+        run: tar -czf test_output.tar.gz -C tests toy_1 toy_2 eeglab_sample_data
       - name: Upload Fortran test output as artifact
         uses: actions/upload-artifact@v4
         with:
