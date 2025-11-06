@@ -79,8 +79,8 @@ jobs:
           echo "Running toy_2 (unmixed signals)"
           ./amica15ub_test ./tests/toy_2/amicadefs_toy_2.param
           echo "Running sklearn tutorial data"
-          ./amica15ub_test ./tests/sklearn_tutorial_data/newton/amicadefs_sklearn_tutorial.param
-          ./amica15ub_test ./tests/sklearn_tutorial_data/SGD/amicadefs_sklearn_tutorial.param
+          ./amica15ub_test ./tests/sklearn_tutorial_data/newton/amicadefs_sklearn_tutorial_data.param
+          ./amica15ub_test ./tests/sklearn_tutorial_data/SGD/amicadefs_sklearn_tutorial_data.param
 
 
       # Always upload artifact for CI consumption
