@@ -85,7 +85,7 @@ jobs:
 
       # Always upload artifact for CI consumption
       - name: Archive test outputs
-        run: tar -czf test_output.tar.gz -C tests toy_1 toy_2 eeglab_sample_data
+        run: tar -czf test_output.tar.gz -C tests toy_1 toy_2 eeglab_sample_data sklearn_tutorial_data
       - name: Upload Fortran test output as artifact
         uses: actions/upload-artifact@v4
         with:
