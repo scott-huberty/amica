@@ -1,5 +1,5 @@
 files ./tests/sklearn_tutorial_data/sklearn_tutorial_data.bin
-outdir ./tests/sklearn_tutorial_data/newton/amicaout_sklearn_tutorial_data/
+outdir ./tests/sklearn_tutorial_data/newton/amicaout/
 data_dim 3
 field_dim 2000
 block_size 2000
