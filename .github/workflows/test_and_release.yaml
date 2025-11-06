@@ -60,7 +60,7 @@ jobs:
           python tools/simulate_data.py --n-samples 5000 --mix-signals --output tests/toy_2/toy_2.bin
           ls -lh tests/toy_2/toy_2.bin
           echo "Toy 2 data generated"
-          python tools/generate_sklearn_tutorial_data.py --output tests/sklearn_tutorial_data/sklearn_tutorial_data.bin
+          python tools/generate_sklearn_tut_data.py --output tests/sklearn_tutorial_data/sklearn_tutorial_data.bin
           ls -lh tests/sklearn_tutorial_data/sklearn_tutorial_data.bin
           echo "Sklearn tutorial data generated"
 
@@ -79,7 +79,8 @@ jobs:
           echo "Running toy_2 (unmixed signals)"
           ./amica15ub_test ./tests/toy_2/amicadefs_toy_2.param
           echo "Running sklearn tutorial data"
-          ./amica15ub_test ./tests/sklearn_tutorial_data/amicadefs_sklearn_tutorial.param
+          ./amica15ub_test ./tests/sklearn_tutorial_data/newton/amicadefs_sklearn_tutorial.param
+          ./amica15ub_test ./tests/sklearn_tutorial_data/SGD/amicadefs_sklearn_tutorial.param
 
 
       # Always upload artifact for CI consumption
