@@ -31,7 +31,7 @@ jobs:
           sudo apt-get install -y make \
             libblas-dev liblapack-dev \
             openmpi-bin libopenmpi-dev
-      
+
       - name: Build Fortran program
         run: |
           make
@@ -40,7 +40,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-        
+
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
@@ -51,7 +51,7 @@ jobs:
           curl -L -o tests/eeglab_sample_data/eeglab_data.fdt https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.fdt
           curl -L -o tests/eeglab_sample_data/eeglab_data.set https://github.com/sccn/eeglab/raw/develop/sample_data/eeglab_data.set
           ls -lh tests/eeglab_sample_data/eeglab_data.*
-      
+
       - name: Generate simulated test data
         run: |
           python tools/simulate_data.py --n-samples 10000 --mix-signals --noise-factor 0.05 --output tests/toy_1/toy_1.bin
@@ -82,16 +82,16 @@ jobs:
           ./amica15ub_test ./tests/sklearn_tutorial_data/newton/amicadefs_sklearn_tutorial_data.param
           ./amica15ub_test ./tests/sklearn_tutorial_data/SGD/amicadefs_sklearn_tutorial_data.param
 
-
       # Always upload artifact for CI consumption
       - name: Archive test outputs
         run: tar -czf test_output.tar.gz -C tests toy_1 toy_2 eeglab_sample_data sklearn_tutorial_data
+
       - name: Upload Fortran test output as artifact
         uses: actions/upload-artifact@v4
         with:
           name: fortran-test-output
           path: test_output.tar.gz
-      
+
       # Attach test outputs to release when we cut one
       - name: Upload Fortran test output to release
         if: github.event_name == 'release' && github.event.action == 'published'
@@ -100,3 +100,46 @@ jobs:
           files: test_output.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Build + push Docker image only for non-prerelease releases,
+      - name: Set Docker tags
+        id: docker_meta
+        if: github.event_name == 'release' && github.event.action == 'published' && !github.event.release.prerelease
+        run: |
+          IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/amica"
+          VERSION="${{ github.event.release.tag_name }}"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+          {
+            echo "tags<<EOF"
+            echo "${IMAGE}:${VERSION}"
+            echo "${IMAGE}:sha-${SHORT_SHA}"
+            echo "${IMAGE}:latest"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Login to Docker Hub
+        if: github.event_name == 'release' && github.event.action == 'published'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        if: github.event_name == 'release' && github.event.action == 'published'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        if: github.event_name == 'release' && github.event.action == 'published'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile.release
+          push: true
+          tags: ${{ steps.docker_meta.outputs.tags }}
+
+      - name: Show published Docker tags
+        if: github.event_name == 'release' && github.event.action == 'published'
+        run: |
+          echo "Published Docker image tags:"
+          echo "${{ steps.docker_meta.outputs.tags }}"
