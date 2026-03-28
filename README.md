@@ -55,3 +55,7 @@ Refer also to Jason Palmer's [AMICA page](https://sccn.ucsd.edu/~jason/amica_web
 
 1.5.2 - Comet supercomputer executable
 
+
+## Docker image publishing on release
+
+This repository publishes a Docker image to Docker Hub when a GitHub Release is published and CI tests pass.

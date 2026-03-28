@@ -1,0 +1,20 @@
+FROM ubuntu:22.04
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+      openmpi-bin \
+      libblas3 \
+      liblapack3 \
+      libgomp1 && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt/amica
+
+# Copy the exact binary compiled and tested in CI before image publish.
+COPY amica15ub_test /opt/amica/amica15ub_test
+RUN chmod +x /opt/amica/amica15ub_test
+
+# Default to AMICA binary; pass params path as container args.
+ENTRYPOINT ["/opt/amica/amica15ub_test"]
