@@ -104,7 +104,7 @@ jobs:
       # Build + push Docker image only for non-prerelease releases,
       - name: Set Docker tags
         id: docker_meta
-        if: github.event_name == 'release' && github.event.action == 'published' && !github.event.release.prerelease
+        if: github.event_name == 'release' && github.event.action == 'published'
         run: |
           IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/amica"
           VERSION="${{ github.event.release.tag_name }}"
